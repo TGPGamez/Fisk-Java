@@ -8,7 +8,12 @@ public class Game {
 		return turn;
 	}
 	public void setTurn(int value) {
-		turn = value;
+		if (turn < players.size()) {
+			turn = value;
+		}
+		else {			
+			turn = 0;
+		}
 	}
 	
 	private List<Player> players;

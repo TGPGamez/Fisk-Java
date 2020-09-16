@@ -1,13 +1,20 @@
 import java.util.Scanner;
 
+
 public class Main {
 
 	private static Game game;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+		
+		
 		startGame();	
+		
 	}
+	
+
 	
 	
 	
@@ -20,7 +27,35 @@ public class Main {
 	private static void drawPlayerTurn(Player player) {
 		System.out.println("It is " + player.getName() + "'s turn\n");
 		
-		System.out.print("Choose your choise: ");
+		System.out.println("1. Take a card from table");
+		System.out.println("2. Take a card from a player");
+		System.out.print("Make your choice: ");
+		@SuppressWarnings("resource")
+		Scanner input = new Scanner(System.in);
+		int choice = input.nextInt();
+		switch(choice) {
+			case 1:
+				takeCardFromTable(player);
+				break;
+			case 2:
+				takeCardFromPlayer();
+				break;
+		}
+	}
+	
+	private static void takeCardFromTable(Player player) {
+		player.addCard(game.getDeck().getDeckCards().get(0));
+		System.out.println("Du fik kortet " + );
+		game.checkPlugs(player);
+		game.getDeck().getDeckCards().remove(0);
+		game.setTurn(game.getTurn() + 1);
+	}
+	
+	private static void takeCardFromPlayer() {
+		System.out.println("\nChoose player to pick from: ");
+		for(int i = 0; i < game.getPlayers().size(); i++) {
+			System.out.println(i + 1 + ". " + game.getPlayers().get(i).getName());
+		}
 	}
 	
 	
@@ -34,6 +69,7 @@ public class Main {
 	private static int playerAmount() {
 		int amount = 0;
 		do {
+			@SuppressWarnings("resource")
 			Scanner in = new Scanner(System.in);
 			System.out.print("How many players will be playing (2-6): ");
 			try {
@@ -55,6 +91,7 @@ public class Main {
 		String[] players = new String[playerAmount()];
 		for(int i = 0; i < players.length; i++) {
 			System.out.print("Write player " + (i + 1) + " name: ");
+			@SuppressWarnings("resource")
 			Scanner input = new Scanner(System.in);
 			String name = input.nextLine();
 			players[i] = name;
