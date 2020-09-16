@@ -85,4 +85,33 @@ public class Game {
 	}
 	
 	
+	public String checkPlayerForcard(Player checkPlayer, int forCard) {
+		int amountOfCheckCard = 0;
+		boolean isHolding = false;
+		for(int i = 0; i < checkPlayer.getPlayerCards().size(); i++) {
+			if(checkPlayer.getPlayerCards().get(i).getNumber() == forCard) {
+				amountOfCheckCard++;
+				isHolding = true;
+			}
+		}
+		if(isHolding) {
+			return switchCards(checkPlayer, amountOfCheckCard, forCard);
+		}
+		else {
+			return checkPlayer.getName() + " didn't have any " + gameDeck.CheckCardDesc(1);
+		}
+		
+	}
+	
+	private String switchCards(Player fromPlayer, int amount, int value) {
+		for(int i = fromPlayer.getPlayerCards().size(); i > amount; i--) {
+			if(fromPlayer.getPlayerCards().get(i).getNumber() == value) {
+				players.get(0).getPlayerCards().add(fromPlayer.getPlayerCards().get(i));
+				fromPlayer.getPlayerCards().remove(i);
+			}
+		}
+		return fromPlayer.getName() + " had " + amount + " of " + gameDeck.CheckCardDesc(value);
+	}
+	
+	
 }

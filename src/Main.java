@@ -45,7 +45,7 @@ public class Main {
 	
 	private static void takeCardFromTable(Player player) {
 		player.addCard(game.getDeck().getDeckCards().get(0));
-		System.out.println("Du fik kortet " + );
+		System.out.println("Du fik kortet " + game.getDeck().CheckCardDesc(game.getDeck().getDeckCards().get(0)));
 		game.checkPlugs(player);
 		game.getDeck().getDeckCards().remove(0);
 		game.setTurn(game.getTurn() + 1);
@@ -54,8 +54,14 @@ public class Main {
 	private static void takeCardFromPlayer() {
 		System.out.println("\nChoose player to pick from: ");
 		for(int i = 0; i < game.getPlayers().size(); i++) {
-			System.out.println(i + 1 + ". " + game.getPlayers().get(i).getName());
+			if(game.getPlayers().get(game.getTurn()) != game.getPlayers().get(i)) {				
+				System.out.println(i + ". " + game.getPlayers().get(i).getName());
+			}
 		}
+		System.out.print("Make your choice: ");
+		Scanner input = new Scanner(System.in);
+		int choice = input.nextInt();
+		
 	}
 	
 	
