@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
+public class Game extends CardConverter {
 	
 	private int turn;
 	public int getTurn() {
@@ -35,9 +35,9 @@ public class Game {
 		int amount = 7;
 		if(playerArray.length > 3)
 			amount = 5;
-		givecardsToPlayers(amount);
+		giveCardsToPlayers(amount);
 		for(int p = 0; p < players.size(); p++) {
-			checkPlugs(players.get(p));
+			removePlayerSet(players.get(p));
 		}
 	}
 	
@@ -49,69 +49,88 @@ public class Game {
 		return toReturn;
 	}
 	
-	private void givecardsToPlayers(int cardAmount) {
-		for(int i = 0; i < cardAmount; i++) {
-			for(int j = 0; j < players.size(); j++) {
-				players.get(j).addCard(gameDeck.getDeckCards().get(0));
+	private void giveCardsToPlayers(int cardAmount) {
+		for(int i = 0; i < players.size(); i++) {
+			for(int j = 0; j < cardAmount; j++) {
+				players.get(i).addCard(gameDeck.getDeckCards().get(0));
 				gameDeck.getDeckCards().remove(0);
 			}
 		}
 	}
+
 	
-	public void checkPlugs(Player player) {
+	public String removePlayerSet(Player player) {
 		for(int i = 0; i < player.getPlayerCards().size(); i++) {
-			int check = 0;
-			for(int j = 0; j < player.getPlayerCards().size(); j++) {
-				if(player.getPlayerCards().get(i).getNumber() == player.getPlayerCards().get(j).getNumber()) {
-					check++;
-				}
-				else {
-				}
-			}
-			if(check == 4) {
-				System.out.println(player.getName() + " had a pair with " + player.getPlayerCards().get(i).getNumber());
-				removePlug(player, player.getPlayerCards().get(i).getNumber());
-				check = 0;
+			if(checkForSet(player, i)) {
+				removeSet(player, i);
+				return player.getName() + "had a set with " + checkCardDesc(player.getCard(i).getNumber());
 			}
 		}
+		return player.getName() + " had no set";
 	}
 	
-	private void removePlug(Player player, int value) {
+	public boolean checkForSet(Player player, int value) {
+		int isSet = 0;
+		for(int i = 0; i < player.getPlayerCards().size(); i++) {
+			if(player.getPlayerCards().get(value).getNumber() == player.getPlayerCards().get(i).getNumber()) {
+				isSet++;
+			}
+		}
+		if(isSet == 4)
+			return true;
+		else
+			return false;
+	}
+	
+	private void removeSet(Player player, int value) {
 		for(int i = player.getPlayerCards().size() - 1; i >= 0; i--) {
-			if(player.getPlayerCards().get(i).getNumber() == value) {
+			if(player.getCard(i).getNumber() == value) {
 				player.getPlayerCards().remove(i);
 			}
 		}
 	}
 	
 	
-	public String checkPlayerForcard(Player checkPlayer, int forCard) {
-		int amountOfCheckCard = 0;
-		boolean isHolding = false;
-		for(int i = 0; i < checkPlayer.getPlayerCards().size(); i++) {
-			if(checkPlayer.getPlayerCards().get(i).getNumber() == forCard) {
-				amountOfCheckCard++;
-				isHolding = true;
+
+	public String checkPlayerForCard(Player checkPlayer, int value) {
+		int hasCard = checkForCard(checkPlayer, value);
+		if(hasCard > 0) {
+			playerHadCard(checkPlayer, players.get(turn), value, hasCard);
+			return checkPlayer.getName() + " had " + hasCard + " of " + checkCardDesc(value);
+		}
+		else 
+		{
+			return checkPlayer.getName() + " didn't have the card " + checkCardDesc(value) 
+			+ "\nYou got the card " + playerNoCard(); 
+		}
+	}
+	
+	private int checkForCard(Player checkPlayer, int value) {
+		int amount = 0;
+		for(int i = checkPlayer.getPlayerCards().size(); i >= 0; i--) {
+			if(checkPlayer.getCard(i).getNumber() == value) {
+				amount++;
 			}
 		}
-		if(isHolding) {
-			return switchCards(checkPlayer, amountOfCheckCard, forCard);
+		return amount;
+	}
+	
+	private void playerHadCard(Player fromPlayer, Player toPlayer, int value, int amount) {
+		for(int i = 0; i < amount; i++) {
+			toPlayer.addCard(fromPlayer.getCard(value));
+			fromPlayer.getPlayerCards().remove(fromPlayer.getCard(value));
+		}
+	}
+	
+	private String playerNoCard() {
+		if (gameDeck.getDeckCards().size() > 0) {
+			players.get(turn).addCard(gameDeck.getDeckCards().get(0));
+			gameDeck.getDeckCards().remove(0);
+			return "You drew the card " + checkCardDesc(players.get(turn).getCard(players.get(turn).getPlayerCards().size() - 1));
 		}
 		else {
-			return checkPlayer.getName() + " didn't have any " + gameDeck.CheckCardDesc(1);
+			return "There isn't any more cards on the table";
 		}
-		
 	}
-	
-	private String switchCards(Player fromPlayer, int amount, int value) {
-		for(int i = fromPlayer.getPlayerCards().size(); i > amount; i--) {
-			if(fromPlayer.getPlayerCards().get(i).getNumber() == value) {
-				players.get(0).getPlayerCards().add(fromPlayer.getPlayerCards().get(i));
-				fromPlayer.getPlayerCards().remove(i);
-			}
-		}
-		return fromPlayer.getName() + " had " + amount + " of " + gameDeck.CheckCardDesc(value);
-	}
-	
 	
 }

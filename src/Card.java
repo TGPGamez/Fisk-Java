@@ -5,9 +5,14 @@ public class Card {
 		return number;
 	}
 	
-	public Card(int numb) {
-		this.number = numb;
+	private CardTypes type;
+	public CardTypes getType() {
+		return type;
 	}
 	
+	public Card(int numb, CardTypes cardType) {
+		this.number = numb;
+		this.type = cardType;
+	}
 	
 }

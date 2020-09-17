@@ -4,10 +4,10 @@ import java.util.Scanner;
 public class Main {
 
 	private static Game game;
+	private static boolean gameEnded;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
 		
 		
 		startGame();	
@@ -20,49 +20,31 @@ public class Main {
 	
 	private static void startGame() {
 		game = new Game(playerToStringArray());
-		drawPlayerTurn(game.getPlayers().get(game.getTurn()));
+		gameEnded = false;
+		keepItRunning();
 	}
 	
+	private static void keepItRunning() {
+		for(int i = 0; i < game.getPlayers().size() - 1; i++) {
+			game.removePlayerSet(game.getPlayers().get(i));
+		}
+		while(!gameEnded) {
+			drawPlayerTurn(game.getPlayers().get(game.getTurn()));
+			
+			//Check if deck is empty and all players have 0 cards to end game
+			
+			game.setTurn(game.getTurn() + 1);
+			
+			
+		}
+	}
 	
 	private static void drawPlayerTurn(Player player) {
-		System.out.println("It is " + player.getName() + "'s turn\n");
+		System.out.println("\nIt is " + player.getName() + "'s turn\n");
 		
-		System.out.println("1. Take a card from table");
-		System.out.println("2. Take a card from a player");
-		System.out.print("Make your choice: ");
-		@SuppressWarnings("resource")
-		Scanner input = new Scanner(System.in);
-		int choice = input.nextInt();
-		switch(choice) {
-			case 1:
-				takeCardFromTable(player);
-				break;
-			case 2:
-				takeCardFromPlayer();
-				break;
-		}
-	}
-	
-	private static void takeCardFromTable(Player player) {
-		player.addCard(game.getDeck().getDeckCards().get(0));
-		System.out.println("Du fik kortet " + game.getDeck().CheckCardDesc(game.getDeck().getDeckCards().get(0)));
-		game.checkPlugs(player);
-		game.getDeck().getDeckCards().remove(0);
-		game.setTurn(game.getTurn() + 1);
-	}
-	
-	private static void takeCardFromPlayer() {
-		System.out.println("\nChoose player to pick from: ");
-		for(int i = 0; i < game.getPlayers().size(); i++) {
-			if(game.getPlayers().get(game.getTurn()) != game.getPlayers().get(i)) {				
-				System.out.println(i + ". " + game.getPlayers().get(i).getName());
-			}
-		}
-		System.out.print("Make your choice: ");
-		Scanner input = new Scanner(System.in);
-		int choice = input.nextInt();
 		
 	}
+	
 	
 	
 	
