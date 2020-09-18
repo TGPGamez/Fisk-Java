@@ -8,6 +8,14 @@ public class Player {
 		return name;
 	}
 	
+	private boolean guessedRight;
+	public boolean getGuessedRight() {
+		return guessedRight;
+	}
+	
+	public void setGuessedRight(boolean value) {
+		guessedRight = value;
+	}
 	
 	public Card getCard(int indexValue) {
 		return cards.get(indexValue);
@@ -22,9 +30,10 @@ public class Player {
 	public Player(String playerName) {
 		this.name = playerName;
 		this.cards = new ArrayList<>();
+		this.guessedRight = false;
 	}
 	
 	public void addCard(Card card) {
-		this.cards.add(card);
+		cards.add(card);
 	}
 }

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -25,8 +27,8 @@ public class Main {
 	}
 	
 	private static void keepItRunning() {
-		for(int i = 0; i < game.getPlayers().size() - 1; i++) {
-			game.removePlayerSet(game.getPlayers().get(i));
+		for(int i = 0; i < game.getPlayers().size(); i++) {
+			System.out.println(game.removePlayerSet(game.getPlayers().get(i)));
 		}
 		while(!gameEnded) {
 			drawPlayerTurn(game.getPlayers().get(game.getTurn()));
@@ -42,13 +44,38 @@ public class Main {
 	private static void drawPlayerTurn(Player player) {
 		System.out.println("\nIt is " + player.getName() + "'s turn\n");
 		
+		System.out.println("Your cards: " + game.drawPlayerCards(game.getPlayers().get(game.getTurn())));
 		
+		do {			
+			drawPlayersToChoice();
+		} while(game.getPlayers().get(game.getTurn()).getGuessedRight());
+		
+		@SuppressWarnings("resource")
+		Scanner input = new Scanner(System.in);
+		System.out.println("Press ENTER to continue");
+		input.nextLine();
 	}
 	
 	
 	
 	
-	
+	private static void drawPlayersToChoice() {
+		System.out.println("Choose player:");
+		List<Player> tempList = new ArrayList<>(game.getPlayers());
+		tempList.remove(game.getTurn());
+		for(int i = 0; i < tempList.size(); i++) {			
+			System.out.println((i + 1) + ". " + tempList.get(i).getName());
+		}
+		System.out.print("\nYour choice: ");
+		@SuppressWarnings("resource")
+		Scanner input = new Scanner(System.in);
+		int choice = input.nextInt();
+		@SuppressWarnings("resource")
+		Scanner input2 = new Scanner(System.in);
+		System.out.print("\nCard to look from (1-13): ");
+		int value = input2.nextInt();
+		System.out.println("\n" + game.checkPlayerForCard(tempList.get(choice - 1), value));
+	}
 	
 	
 	

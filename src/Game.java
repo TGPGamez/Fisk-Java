@@ -8,7 +8,7 @@ public class Game extends CardConverter {
 		return turn;
 	}
 	public void setTurn(int value) {
-		if (turn < players.size()) {
+		if (turn < players.size() - 1) {
 			turn = value;
 		}
 		else {			
@@ -95,7 +95,7 @@ public class Game extends CardConverter {
 	public String checkPlayerForCard(Player checkPlayer, int value) {
 		int hasCard = checkForCard(checkPlayer, value);
 		if(hasCard > 0) {
-			playerHadCard(checkPlayer, players.get(turn), value, hasCard);
+			playerHadCard(checkPlayer, players.get(turn), value);
 			return checkPlayer.getName() + " had " + hasCard + " of " + checkCardDesc(value);
 		}
 		else 
@@ -107,7 +107,7 @@ public class Game extends CardConverter {
 	
 	private int checkForCard(Player checkPlayer, int value) {
 		int amount = 0;
-		for(int i = checkPlayer.getPlayerCards().size(); i >= 0; i--) {
+		for(int i = checkPlayer.getPlayerCards().size() - 1; i >= 0; i--) {
 			if(checkPlayer.getCard(i).getNumber() == value) {
 				amount++;
 			}
@@ -115,22 +115,35 @@ public class Game extends CardConverter {
 		return amount;
 	}
 	
-	private void playerHadCard(Player fromPlayer, Player toPlayer, int value, int amount) {
-		for(int i = 0; i < amount; i++) {
-			toPlayer.addCard(fromPlayer.getCard(value));
-			fromPlayer.getPlayerCards().remove(fromPlayer.getCard(value));
+	private void playerHadCard(Player fromPlayer, Player toPlayer, int value) {
+		players.get(turn).setGuessedRight(true);
+		for(int i = fromPlayer.getPlayerCards().size() - 1; i >= 0 ; i--) {
+			if(fromPlayer.getCard(i).getNumber() == value) {
+				toPlayer.addCard(fromPlayer.getCard(i));
+				fromPlayer.getPlayerCards().remove(i);
+			}
 		}
 	}
 	
 	private String playerNoCard() {
+		players.get(turn).setGuessedRight(false);
 		if (gameDeck.getDeckCards().size() > 0) {
 			players.get(turn).addCard(gameDeck.getDeckCards().get(0));
 			gameDeck.getDeckCards().remove(0);
-			return "You drew the card " + checkCardDesc(players.get(turn).getCard(players.get(turn).getPlayerCards().size() - 1));
+			return "You drew the card " + players.get(turn).getCard(players.get(turn).getPlayerCards().size() - 1).getType().getDesc() + "-" + checkCardDesc(players.get(turn).getCard(players.get(turn).getPlayerCards().size() - 1));
 		}
 		else {
 			return "There isn't any more cards on the table";
 		}
+	}
+	
+	
+	public String drawPlayerCards(Player player) {
+		String tempString = "";
+		for(int i = 0; i < player.getPlayerCards().size(); i++) {
+			tempString = tempString + player.getCard(i).getType().getDesc() + "-" + player.getCard(i).getNumber() + " : ";
+		}
+		return tempString;
 	}
 	
 }
